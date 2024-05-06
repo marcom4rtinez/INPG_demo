@@ -15,6 +15,10 @@ jinja2_transforms:
     query: "juniper_srx_config"
     template_path: "templates/juniper_srx_config.j2"
 
+  - name: "clab_topology"
+    query: "topology_info"
+    template_path: "topology/topology.tpl.j2"
+
 artifact_definitions:
   - name: "Openconfig Interface for Arista devices"
     artifact_name: "openconfig-interfaces"
