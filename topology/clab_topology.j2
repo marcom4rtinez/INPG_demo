@@ -12,18 +12,19 @@ topology:
       image: "${LINUX_HOST_DOCKER_IMAGE}"
   nodes:
 {% for device in data.InfraDevice.edges %}
+{% set networkos = device.node.device_type.node.platform.node.containerlab_os.value %}
     {{ device.node.name.value }}:
-      kind: {{ device.node.type.value }}
+      kind: {{ networkos }}
 {%  for intf in device.node.interfaces.edges %}
 {%    if intf.node.role.value == "management" %}
 {%      set management_ip = intf.node.ip_addresses.edges[0].node.address.value.split('/') %}
       mgmt-ipv4: {{ management_ip[0] }}
 {%    endif %}
 {%  endfor %}
-{%  if device.node.type.value == "eos" %}
+{%  if networkos == "ceos" %}
       startup-config: configs/startup/{{ device.node.name.value }}.cfg
 {%  endif %}
-{%  if device.node.type.value == "linux" %}
+{%  if networkos == "linux" %}
       env:
         TMODE: lacp
 {%  endif %}

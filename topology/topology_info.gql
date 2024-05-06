@@ -1,4 +1,4 @@
-query topology_info ($topology_name: String!) {
+query topology_info($topology_name: String!) {
   InfraDevice(topology__name__value: $topology_name) {
     edges {
       node {
@@ -9,7 +9,9 @@ query topology_info ($topology_name: String!) {
           edges {
             node {
               id
-              name {value}
+              name {
+                value
+              }
               role {
                 value
               }
@@ -24,9 +26,11 @@ query topology_info ($topology_name: String!) {
                   }
                 }
               }
-              enabled { value}
+              enabled {
+                value
+              }
               ... on InfraEndpoint {
-                connected_endpoint {
+                connected_endpoint @skip(if: true){
                   node {
                     id
                     ... on InfraInterface {
@@ -51,6 +55,13 @@ query topology_info ($topology_name: String!) {
           node {
             name {
               value
+            }
+            platform {
+              node {
+                containerlab_os {
+                  value
+                }
+              }
             }
           }
         }
