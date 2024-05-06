@@ -17,7 +17,7 @@ jinja2_transforms:
 
   - name: "clab_topology"
     query: "topology_info"
-    template_path: "topology/topology.tpl.j2"
+    template_path: "topology/clab_topology.j2"
 
 artifact_definitions:
   - name: "Openconfig Interface for Arista devices"
