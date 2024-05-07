@@ -52,6 +52,14 @@ artifact_definitions:
     targets: "firewall_devices"
     transformation: "firewall_config"
 
+  - name: "Containerlab Topology"
+    artifact_name: "containerlab-topology"
+    parameters:
+      device: "topology__name"
+    content_type: "text/plain"
+    targets: "fra05-pod1_topology"
+    transformation: "clab_topology"
+
 check_definitions:
   - name: "check_device_topology"
     class_name: "InfrahubCheckDeviceTopology"
