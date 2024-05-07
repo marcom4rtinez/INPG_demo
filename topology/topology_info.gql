@@ -8,7 +8,6 @@ query topology_info($topology_name: String!) {
         interfaces {
           edges {
             node {
-              id
               name {
                 value
               }
@@ -26,11 +25,8 @@ query topology_info($topology_name: String!) {
                   }
                 }
               }
-              enabled {
-                value
-              }
               ... on InfraEndpoint {
-                connected_endpoint @skip(if: true){
+                connected_endpoint {
                   node {
                     id
                     ... on InfraInterface {
@@ -53,9 +49,6 @@ query topology_info($topology_name: String!) {
         }
         device_type {
           node {
-            name {
-              value
-            }
             platform {
               node {
                 containerlab_os {

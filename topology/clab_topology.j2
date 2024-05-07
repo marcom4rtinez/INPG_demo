@@ -31,16 +31,24 @@ topology:
 {% endfor %}
 
   links:
-    - endpoints: ["atl-leaf1:eth3", "atl-spine1:eth3"]
-    - endpoints: ["atl-leaf2:eth3", "atl-spine1:eth4"]
-    - endpoints: ["atl-leaf3:eth3", "atl-spine1:eth5"]
-    - endpoints: ["atl-leaf4:eth3", "atl-spine1:eth6"]
-    - endpoints: ["atl-leaf1:eth4", "atl-spine2:eth3"]
-    - endpoints: ["atl-leaf2:eth4", "atl-spine2:eth4"]
-    - endpoints: ["atl-leaf3:eth4", "atl-spine2:eth5"]
-    - endpoints: ["atl-leaf4:eth4", "atl-spine2:eth6"]
-    - endpoints: ["atl-leaf1:eth5", "atl-client1:eth1"]
-    - endpoints: ["atl-leaf4:eth5", "atl-client2:eth1"]
+{% set processed_endpoints = [] %}
+{% for device in data.InfraDevice.edges %}
+  {% for interface in device.node.interfaces.edges %}
+    {% set connected_endpoint = interface.node.connected_endpoint.node %}
+    {% if connected_endpoint is not none %}
+      {% set endpoint1 = device.node.name.value + ":" + interface.node.name.value %}
+      {% set endpoint2 = connected_endpoint.device.node.name.value + ":" + connected_endpoint.name.value %}
+      {% set endpoint_tuple = [endpoint1, endpoint2] | sort %}
+      {% set endpoint_key = endpoint_tuple | join("|") %}
+      {% if endpoint_key not in processed_endpoints %}
+        {% set _ = processed_endpoints.append(endpoint_key) %}
+        {% set endpoint1 = endpoint1.replace("Ethernet", "eth") %}
+        {% set endpoint2 = endpoint2.replace("Ethernet", "eth") %}
+    - endpoints: ["{{ endpoint1 }}", "{{ endpoint2 }}"]
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
 
 mgmt:
   network: ceos_clab
