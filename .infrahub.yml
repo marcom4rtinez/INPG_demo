@@ -55,9 +55,9 @@ artifact_definitions:
   - name: "Containerlab Topology"
     artifact_name: "containerlab-topology"
     parameters:
-      device: "topology__name"
+      topology_name: "name__value"
     content_type: "text/plain"
-    targets: "fra05-pod1_topology"
+    targets: "all-topologies"
     transformation: "clab_topology"
 
 check_definitions:
