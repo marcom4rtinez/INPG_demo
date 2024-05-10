@@ -52,7 +52,7 @@
     "ghcr.io/devcontainers/features/docker-in-docker:latest": {
       "version": "latest"
     },
-    "ghcr.io/devcontainers/features/github-cli:1.0.11": {
+    "ghcr.io/devcontainers/features/github-cli:latest": {
       "version": "latest"
     }
   },
