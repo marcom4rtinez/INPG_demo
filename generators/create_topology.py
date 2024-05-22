@@ -110,21 +110,6 @@ async def create_topology(client: InfrahubClient, log: logging.Logger, branch: s
             store=store,
             batch=batch
             )
-    # Create Topology Summary Group
-    group_name = "all-topologies"
-    data={
-        "name": group_name,
-    }
-    await upsert_object(
-        client=client,
-        log=log,
-        branch=branch,
-        object_name=group_name,
-        kind_name="CoreStandardGroup",
-        data=data,
-        store=store,
-        batch=batch
-        )
     async for node, _ in batch.execute():
         accessor = f"{node._schema.default_filter.split('__')[0]}"
         log.info(f"- Created {node._schema.kind} - {getattr(node, accessor).value}")
@@ -220,7 +205,7 @@ async def create_topology(client: InfrahubClient, log: logging.Logger, branch: s
     # Add Topologies to Topology Summary Group
     for topology in TOPOLOGY:
         topology_name = topology[0]
-        topology_group = store.get(key=f"all-topologies", kind="CoreStandardGroup")
+        topology_group = await client.get(kind="CoreStandardGroup", name__value="all_topologies")
         await group_add_member(
             client=client,
             group=topology_group,

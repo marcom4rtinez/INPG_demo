@@ -122,6 +122,7 @@ GROUPS = (
     ("juniper_devices", "Juniper Devices"),
     ("upstream_interfaces", "Upstream Interface"),
     ("core_interfaces", "Core Interface"),
+    ("all_topologies", "All Topologies")
 )
 
 BGP_PEER_GROUPS = (

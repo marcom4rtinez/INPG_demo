@@ -57,7 +57,7 @@ artifact_definitions:
     parameters:
       topology_name: "name__value"
     content_type: "text/plain"
-    targets: "all-topologies"
+    targets: "all_topologies"
     transformation: "clab_topology"
 
 check_definitions:
