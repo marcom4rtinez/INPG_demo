@@ -155,3 +155,15 @@ Using your new branch `test` you will be able to see the Diff in the Proposed Ch
 - Modify an Elements in a Topology (example: increase or decrease the quantity of leaf switches in fra05-pod1)
 
 - The checks will run in the Proposed Changes -> check_device_topology will fail.
+
+### 12. Deploy your environment to containerlabs
+
+The containerlab generator automatically generates a containerlab topology artifact for every topology. Every device has its' startup config as an artifact.
+
+```shell
+# Download all artifacts automatically to ./generated-configs/
+poetry run python3 scripts/get_configs.py
+
+# Start the containerlab
+sudo -E containerlab deploy -t ./generated-configs/clab/fra05-pod1.yml --reconfigure
+```
