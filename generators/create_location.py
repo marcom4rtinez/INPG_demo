@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from infrahub_sdk import UUIDT, InfrahubClient, InfrahubNode, NodeStore
 
-from utils import add_relationships, group_add_member, populate_local_store, upsert_object
+from utils import create_and_save, create_and_add_to_batch, populate_local_store
 
 # flake8: noqa
 # pylint: skip-file
@@ -314,7 +314,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
             "shortname": continent_shortname,
             "timezone": continent_timezone,
         }
-        continent_obj = await upsert_object(
+        continent_obj = await create_and_save(
             client=client,
             log=log,
             branch=branch,
@@ -335,7 +335,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                 "parent": continent_obj,
                 "timezone": country_timezone,
             }
-            country_obj = await upsert_object(
+            country_obj = await create_and_save(
                 client=client,
                 log=log,
                 branch=branch,
@@ -356,7 +356,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                     "parent": country_obj,
                     "timezone": region_timezone,
                 }
-                region_obj = await upsert_object(
+                region_obj = await create_and_save(
                     client=client,
                     log=log,
                     branch=branch,
@@ -376,14 +376,12 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                 name_server_obj = store.get(key=random_name_server, kind="NetworkNameServer")
 
                 mgmt_servers_obj = [name_server_obj, time_server_obj]
-
-                await add_relationships(
-                    client=client,
-                    node_to_update=region_obj,
+                mgmt_servers_obj_ids = [mgmt_server_obj.id for mgmt_server_obj in mgmt_servers_obj]
+                await region_obj.add_relationships(
                     relation_to_update="network_management_servers",
-                    related_nodes=mgmt_servers_obj,
-                    branch=branch,
+                    related_nodes=mgmt_servers_obj_ids
                 )
+
                 for mgmt_server_obj in mgmt_servers_obj:
                     log.info(f"- Added {mgmt_server_obj.name.value} to {region_name}")
 
@@ -395,7 +393,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                         "shortname": metro_shortname,
                         "parent": region_obj,
                      }
-                    metro_obj = await upsert_object(
+                    metro_obj = await create_and_save(
                         client=client,
                         log=log,
                         branch=branch,
@@ -423,7 +421,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                             "owner": owner_id,
                             "parent": metro_obj,
                         }
-                        building_obj = await upsert_object(
+                        building_obj = await create_and_save(
                             client=client,
                             log=log,
                             branch=branch,
@@ -442,7 +440,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                                 "shortname": floor_shortname,
                                 "parent": building_obj,
                             }
-                            floor_obj = await upsert_object(
+                            floor_obj = await create_and_save(
                                 client=client,
                                 log=log,
                                 branch=branch,
@@ -472,7 +470,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                                     "owner": owner_id,
                                     "parent": floor_obj,
                                 }
-                                suite_obj = await upsert_object(
+                                suite_obj = await create_and_save(
                                     client=client,
                                     log=log,
                                     branch=branch,
@@ -497,7 +495,7 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                                         "owner": owner_id,
                                         "parent": suite_obj,
                                     }
-                                    rack_obj = await upsert_object(
+                                    rack_obj = await create_and_add_to_batch(
                                         client=client,
                                         log=log,
                                         branch=branch,
@@ -506,7 +504,6 @@ async def create_location_hierarchy(client: InfrahubClient, log: logging.Logger,
                                         data=data,
                                         store=store,
                                         batch=batch_racks,
-                                        retrieved_on_failure=False
                                     )
 
     async for node, _ in batch_racks.execute():
@@ -536,7 +533,7 @@ async def create_location(client: InfrahubClient, log: logging.Logger, branch: s
             "description": {"value": mgmt_server_desc, "is_protected": True, "source": account_eng.id},
             "status": {"value": ACTIVE_STATUS, "is_protected": True, "source": account_eng.id},
         }
-        await upsert_object(
+        await create_and_save(
             client=client,
             log=log,
             branch=branch,
@@ -588,7 +585,7 @@ async def create_location(client: InfrahubClient, log: logging.Logger, branch: s
                 "role": {"value": role, "source": account_pop.id, "is_protected": True, "owner": account_eng.id},
                 "location": {"id": location_id},
             }
-            await upsert_object(
+            await create_and_add_to_batch(
                 client=client,
                 log=log,
                 branch=branch,
@@ -617,7 +614,7 @@ async def create_location(client: InfrahubClient, log: logging.Logger, branch: s
             "status": {"value": "active" },
             "role": {"value": "supernet" },
         }
-        supernet_obj = await upsert_object(
+        supernet_obj = await create_and_save(
             client=client,
             log=log,
             branch=branch,
@@ -661,7 +658,7 @@ async def create_location(client: InfrahubClient, log: logging.Logger, branch: s
                 "ip_namespace": { "id": vrf_id },
             }
 
-            prefix_obj = await upsert_object(
+            prefix_obj = await create_and_save(
                 client=client,
                 log=log,
                 branch=branch,

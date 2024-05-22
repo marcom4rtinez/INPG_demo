@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Optional
 from infrahub_sdk import InfrahubBatch, UUIDT, InfrahubClient, InfrahubNode, NodeStore
 
 from create_location import LOCATION_SUPERNETS, LOCATION_MGMTS, EXTERNAL_NETWORKS
-from utils import add_relationships, group_add_member, populate_local_store, upsert_object
+from utils import populate_local_store, create_and_save, create_and_add_to_batch
 
 
 # flake8: noqa
@@ -200,16 +200,27 @@ async def upsert_interface(
     if found_iface is not None:
         data["id"] = found_iface.id
 
-    interface_obj = await upsert_object(
-        client=client,
-        log=log,
-        branch=branch,
-        object_name=f"{device_name}-{intf_name}",
-        kind_name=kind_name,
-        data=data,
-        store=store,
-        batch=batch
-    )
+    if batch:
+        interface_obj = await create_and_add_to_batch(
+            client=client,
+            log=log,
+            branch=branch,
+            object_name=f"{device_name}-{intf_name}",
+            kind_name=kind_name,
+            data=data,
+            store=store,
+            batch=batch
+        )
+    else:
+        interface_obj = await create_and_save(
+            client=client,
+            log=log,
+            branch=branch,
+            object_name=f"{device_name}-{intf_name}",
+            kind_name=kind_name,
+            data=data,
+            store=store,
+        )
     return interface_obj
 
 async def upsert_ip_address(
@@ -237,16 +248,27 @@ async def upsert_ip_address(
         "description": {"value": description},
         "address": {"value": address, "source": account_pop_id},
     }
-    ip_obj = await upsert_object(
-        client=client,
-        log=log,
-        branch=branch,
-        object_name=f"{device_name}-{interface_obj.name.value}-address",
-        kind_name="InfraIPAddress",
-        data=data,
-        store=store,
-        batch=batch,
-    )
+    if batch:
+        ip_obj = await create_and_add_to_batch(
+            client=client,
+            log=log,
+            branch=branch,
+            object_name=f"{device_name}-{interface_obj.name.value}-address",
+            kind_name="InfraIPAddress",
+            data=data,
+            store=store,
+            batch=batch,
+        )
+    else:
+        ip_obj = await create_and_save(
+            client=client,
+            log=log,
+            branch=branch,
+            object_name=f"{device_name}-{interface_obj.name.value}-address",
+            kind_name="InfraIPAddress",
+            data=data,
+            store=store,
+        )
     return ip_obj
 
 def prepare_interface_data(
@@ -412,7 +434,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                         "organization": { "id": orga_duff.id },
                         "description": { "value": f"Private {asn_name} for Duff on device {device_name}"}
                     }
-                    asn_obj = await upsert_object(
+                    asn_obj = await create_and_save(
                         client=client,
                         log=log,
                         branch=branch,
@@ -433,7 +455,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                     "platform": { "id": platform_id, "source": account_pop.id, "is_protected": True },
                     "topology": { "id": topology_id, "source": account_pop.id, "is_protected": True },
                 }
-                device_obj = await upsert_object(
+                device_obj = await create_and_save(
                     client=client,
                     log=log,
                     branch=branch,
@@ -446,21 +468,15 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
 
                 # Add device to groups
                 platform_group_name = f"{platform.name.value.lower().split(' ', 1)[0]}_devices"
-                platform_group = store.get(key=platform_group_name, kind="CoreStandardGroup")
-                await group_add_member(
-                    client=client,
-                    group=platform_group,
-                    members=[device_obj],
-                    branch=branch
-                    )
+                platform_group = await client.get(name__value=platform_group_name, kind="CoreStandardGroup")
+                await platform_group.members.fetch()
+                platform_group.members.add(device_obj.id)
+                await platform_group.save()
                 log.info(f"- Add {device_name} to {platform_group_name} CoreStandardGroup")
-                topology_group = store.get(key=f"{topology_name}_topology", kind="CoreStandardGroup")
-                await group_add_member(
-                    client=client,
-                    group=topology_group,
-                    members=[device_obj],
-                    branch=branch
-                    )
+                topology_group = await client.get(name__value=f"{topology_name}_topology", kind="CoreStandardGroup")
+                await topology_group.members.fetch()
+                topology_group.members.add(device_obj.id)
+                await topology_group.save()
                 log.info(f"- Add {device_name} to {topology_group} CoreStandardGroup")
 
                 # FIXME  Interface name is not unique, upsert() is not good enough for indempotency. Need constraints
@@ -750,7 +766,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                     "role": {"value": "technical" },
                     "ip_namespace": { "id": backbone_vrf_obj_id }
                 }
-                prefix_obj = await upsert_object(
+                prefix_obj = await create_and_save(
                     client=client,
                     log=log,
                     branch=branch,
@@ -819,7 +835,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                         "remote_as": { "id": leaf_asn_obj.id},
                         "description": {"value": f"BGP group for {topology_name} underlay" },
                     }
-                    spine_bgp_group_obj = await upsert_object(
+                    spine_bgp_group_obj = await create_and_save(
                         client=client,
                         log=log,
                         branch=branch,
@@ -834,7 +850,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                         "local_as": { "id": leaf_asn_obj.id},
                         "description": {"value": f"BGP group for {topology_name} underlay" },
                     }
-                    leaf_bgp_group_obj = await upsert_object(
+                    leaf_bgp_group_obj = await create_and_save(
                         client=client,
                         log=log,
                         branch=branch,
@@ -855,7 +871,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                         "peer_group": { "id": spine_bgp_group_obj.id },
                         "description": {"value": remove_interface_prefixes(new_spine_intf_description) },
                     }
-                    spine_session_obj = await upsert_object(
+                    spine_session_obj = await create_and_save(
                         client=client,
                         log=log,
                         branch=branch,
@@ -877,7 +893,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                         "peer_group": { "id": leaf_bgp_group_obj.id },
                         "description": {"value": remove_interface_prefixes(new_leaf_intf_description) },
                     }
-                    leaf_session_obj = await upsert_object(
+                    leaf_session_obj = await create_and_add_to_batch(
                         client=client,
                         log=log,
                         branch=branch,
@@ -949,7 +965,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                         "role": {"value": "technical"},
                         "ip_namespace": { "id": backbone_vrf_obj_id }
                     }
-                    prefix_obj = await upsert_object(
+                    prefix_obj = await create_and_save(
                         client=client,
                         log=log,
                         branch=branch,
@@ -1018,7 +1034,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                             "remote_as": { "id": leaf_asn_obj.id},
                             "description": {"value": f"BGP group for {topology_name} underlay" },
                         }
-                        spine_bgp_group_obj = await upsert_object(
+                        spine_bgp_group_obj = await create_and_save(
                             client=client,
                             log=log,
                             branch=branch,
@@ -1033,7 +1049,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                             "local_as": { "id": leaf_asn_obj.id},
                             "description": {"value": f"BGP group for {topology_name} underlay" },
                         }
-                        leaf_bgp_group_obj = await upsert_object(
+                        leaf_bgp_group_obj = await create_and_save(
                             client=client,
                             log=log,
                             branch=branch,
@@ -1054,7 +1070,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                             "peer_group": { "id": spine_bgp_group_obj.id },
                             "description": {"value": remove_interface_prefixes(new_spine_intf_description) },
                         }
-                        spine_session_obj = await upsert_object(
+                        spine_session_obj = await create_and_save(
                             client=client,
                             log=log,
                             branch=branch,
@@ -1076,7 +1092,7 @@ async def generate_topology(client: InfrahubClient, log: logging.Logger, branch:
                             "peer_group": { "id": leaf_bgp_group_obj.id },
                             "description": {"value": remove_interface_prefixes(new_leaf_intf_description) },
                         }
-                        leaf_session_obj = await upsert_object(
+                        leaf_session_obj = await create_and_save(
                             client=client,
                             log=log,
                             branch=branch,

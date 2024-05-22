@@ -4,7 +4,7 @@ from typing import  List
 
 from infrahub_sdk import InfrahubClient, NodeStore
 
-from utils import group_add_member, populate_local_store, upsert_object
+from utils import create_and_add_to_batch, populate_local_store
 
 # flake8: noqa
 # pylint: skip-file
@@ -74,7 +74,7 @@ async def create_topology_strategies(client: InfrahubClient, log: logging.Logger
             "underlay": {"value": underlay, "source": account.id},
             "overlay": {"value": overlay, "source": account.id},
         }
-        await upsert_object(
+        await create_and_add_to_batch(
             client=client,
             log=log,
             branch=branch,
@@ -100,7 +100,7 @@ async def create_topology(client: InfrahubClient, log: logging.Logger, branch: s
         data={
            "name": group_name,
         }
-        await upsert_object(
+        await create_and_add_to_batch(
             client=client,
             log=log,
             branch=branch,
@@ -132,7 +132,7 @@ async def create_topology(client: InfrahubClient, log: logging.Logger, branch: s
             topology_location_object = store.get(key=topology[2])
             if topology_location_object:
                 data["location"] = {"id": topology_location_object.id}
-        await upsert_object(
+        await create_and_add_to_batch(
             client=client,
             log=log,
             branch=branch,
@@ -150,13 +150,11 @@ async def create_topology(client: InfrahubClient, log: logging.Logger, branch: s
     for topology in TOPOLOGY:
         # Add Topology to Topology Group
         topology_name = topology[0]
-        topology_group = store.get(key=f"{topology_name}_topology", kind="CoreStandardGroup")
-        await group_add_member(
-            client=client,
-            group=topology_group,
-            members=[store.get(key=topology_name, kind="TopologyTopology")],
-            branch=branch
-            )
+        topology_group = await client.get(name__value=f"{topology_name}_topology", kind="CoreStandardGroup")
+        topology_obj = await client.get(name__value=topology_name, kind="TopologyTopology")
+        await topology_group.members.fetch()
+        topology_group.members.add(topology_obj.id)
+        await topology_group.save()
         log.info(f"- Add {topology_name} to {topology_group.name.value} CoreStandardGroup")
 
         topology_object = store.get(key=topology_name, kind="TopologyTopology")
@@ -191,7 +189,7 @@ async def create_topology(client: InfrahubClient, log: logging.Logger, branch: s
                 "border": element[5],
                 "mtu": element[3],
             }
-            await upsert_object(
+            await create_and_add_to_batch(
                 client=client,
                 log=log,
                 branch=branch,

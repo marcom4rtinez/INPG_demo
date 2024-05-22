@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from infrahub_sdk import InfrahubBatch, InfrahubClient, InfrahubNode, NodeStore
 
-from utils import populate_local_store, upsert_object
+from utils import create_and_save, populate_local_store
 
 
 # flake8: noqa
@@ -144,7 +144,7 @@ async def generate_network_services(
             "role": { "value": "server", "source": account_pop.id, "is_protected": True, "owner": account_eng.id },
             "location": { "id": location_id},
         }
-        vlan_obj = await upsert_object(
+        vlan_obj = await create_and_save(
             client=client,
             log=log,
             branch=branch,
@@ -168,7 +168,7 @@ async def generate_network_services(
                 "role": { "value": "server" },
                 "ip_namespace": { "id": vrf_id },
             }
-            prefix_obj = await upsert_object(
+            prefix_obj = await create_and_save(
                 client=client,
                 log=log,
                 branch=branch,
@@ -182,7 +182,7 @@ async def generate_network_services(
         identifier_data = {
             "identifier": {"value": new_service_id, "is_protected": True, "source": account_pop.id},
         }
-        identifier_obj = await upsert_object(
+        identifier_obj = await create_and_save(
             client=client,
             log=log,
             branch=branch,
@@ -209,7 +209,7 @@ async def generate_network_services(
         }
         if previous_service_obj:
             service_data["id"] = previous_service_obj.id
-        service_obj = await upsert_object(
+        service_obj = await create_and_save(
                 client=client,
                 log=log,
                 branch=branch,
