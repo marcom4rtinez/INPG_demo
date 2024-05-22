@@ -8,6 +8,3 @@ sleep 30
 
 # Load infra-data
 ./scripts/create_demo_data.sh
-
-# Create devices
-./scripts/create_sample_topology.sh
