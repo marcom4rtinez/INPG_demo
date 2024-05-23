@@ -19,10 +19,12 @@
 {%         set ns.management_intf_name = intf.node.name.value %}
 {%         if intf.node.ip_addresses.edges %}
 {%            set ns.management_ip = intf.node.ip_addresses.edges[0].node.address.ip %}
-{%            set broadcast_address = intf.node.ip_addresses.edges[0].node.ip_prefix.node.broadcast_address.value %}
-{%            set octets = broadcast_address.split('.') %}
-{%            set last_octet = octets[3] | int - 1 %}
-{%            set ns.mangement_gw_ip = octets[0] ~ '.' ~ octets[1] ~ '.' ~ octets[2] ~ '.' ~ last_octet | string %}
+{%            if intf.node.ip_addresses.edges[0].node.ip_prefix %}
+{%               set broadcast_address = intf.node.ip_addresses.edges[0].node.ip_prefix.node.broadcast_address.value %}
+{%               set octets = broadcast_address.split('.') %}
+{%               set last_octet = octets[3] | int - 1 %}
+{%               set ns.mangement_gw_ip = octets[0] ~ '.' ~ octets[1] ~ '.' ~ octets[2] ~ '.' ~ last_octet | string %}
+{%            endif %}
 {%         endif %}
 {%      endif %}
 {%   endfor %}

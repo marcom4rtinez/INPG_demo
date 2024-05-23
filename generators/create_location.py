@@ -658,7 +658,7 @@ async def create_location(client: InfrahubClient, log: logging.Logger, branch: s
                 "ip_namespace": { "id": vrf_id },
             }
 
-            prefix_obj = await create_and_save(
+            prefix_obj = await create_and_add_to_batch(
                 client=client,
                 log=log,
                 branch=branch,
