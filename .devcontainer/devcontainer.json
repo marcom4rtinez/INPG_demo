@@ -26,29 +26,38 @@
   },
   "remoteUser": "vscode",
   "remoteEnv": {
-      "ANSIBLE_CONFIG": "/workspaces/infrahub-demo-dc-fabric/ansible.cfg",
-      "INFRAHUB_ADDRESS": "http://localhost:8000",
-      "INFRAHUB_API_TOKEN": "06438eb2-8019-4776-878c-0941b1f1d1ec",
-      "INFRAHUB_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/opsmill/infrahub:0.13.0",
-      "DATABASE_DOCKER_IMAGE": "neo4j:5.19-community",
-      "INFRAHUB_DB_TYPE": "neo4j",
-      "INFRAHUB_SECURITY_SECRET_KEY": "327f747f-efac-42be-9e73-999f08f86b92",
-      "CACHE_DOCKER_IMAGE": "redis:7.2",
-      "MESSAGE_QUEUE_IMAGE": "rabbitmq:3.12-management",
-      "CEOS_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/external/ceos-image:4.29.0.2F",
-      "LINUX_HOST_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/external/alpine-host:v3.1.1"
+    "ANSIBLE_CONFIG": "/workspaces/infrahub-demo-dc-fabric/ansible.cfg",
+    "INFRAHUB_ADDRESS": "http://localhost:8000",
+    "INFRAHUB_API_TOKEN": "06438eb2-8019-4776-878c-0941b1f1d1ec",
+    "INFRAHUB_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/opsmill/infrahub:0.13.0",
+    "DATABASE_DOCKER_IMAGE": "neo4j:5.19-community",
+    "INFRAHUB_DB_TYPE": "neo4j",
+    "INFRAHUB_SECURITY_SECRET_KEY": "327f747f-efac-42be-9e73-999f08f86b92",
+    "CACHE_DOCKER_IMAGE": "redis:7.2",
+    "MESSAGE_QUEUE_IMAGE": "rabbitmq:3.12-management",
+    "CEOS_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/external/ceos-image:4.29.0.2F",
+    "LINUX_HOST_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/external/alpine-host:v3.1.1"
   },
-  "forwardPorts": [8000],
-  "runArgs": ["--volume=/var/lib/docker", "--privileged"],
+  "forwardPorts": [
+    8000
+  ],
+  "runArgs": [
+    "--volume=/var/lib/docker",
+    "--privileged"
+  ],
   "onCreateCommand": "./.devcontainer/onCreateCommand.sh",
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
   "postAttachCommand": "./.devcontainer/postAttachCommand.sh",
   "features": {
-    "docker-in-docker": "latest",
-    "github-cli": "latest"
+    "ghcr.io/devcontainers/features/docker-in-docker:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:latest": {
+      "version": "latest"
+    }
   },
   "hostRequirements": {
     "cpus": 16,
     "memory": "16gb"
- }
+  }
 }

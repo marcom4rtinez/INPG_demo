@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://schema.infrahub.app/infrahub/schema/latest.json
 ---
-version: '1.0'
+version: "1.0"
 generics:
   - name: GenericDevice
     namespace: Infra
@@ -102,7 +102,7 @@ generics:
       - device__name__value
       - name__value
     uniqueness_constraints:
-        - [ "device", "name__value"]
+      - ["device", "name__value"]
     attributes:
       - name: name
         kind: Text
@@ -228,7 +228,7 @@ nodes:
       - manufacturer__name__value
       - name__value
     uniqueness_constraints:
-        - [ "manufacturer", "name__value"]
+      - ["manufacturer", "name__value"]
     attributes:
       - name: name
         kind: Text
@@ -288,7 +288,7 @@ nodes:
       - manufacturer__name__value
       - name__value
     uniqueness_constraints:
-        - [ "manufacturer", "name__value"]
+      - ["manufacturer", "name__value"]
     attributes:
       - name: name
         kind: Text
@@ -314,6 +314,10 @@ nodes:
         kind: Text
         optional: true
         order_weight: 1800
+      - name: containerlab_os
+        kind: Text
+        optional: true
+        order_weight: 1900
     relationships:
       - name: devices
         peer: InfraGenericDevice

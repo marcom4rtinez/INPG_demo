@@ -95,13 +95,13 @@ ROUTE_TARGETS = {
 }
 
 PLATFORMS = (
-    # name, nornir_platform, napalm_driver, netmiko_device_type, ansible_network_os
-    ("Cisco IOS-XE", "ios", "ios", "cisco_ios", "ios"),
-    ("Cisco IOS-XR", "iosxr", "iosxr", "cisco_xr", "cisco.iosxr.iosxr"),
-    ("Cisco NXOS SSH", "nxos_ssh", "nxos_ssh", "cisco_nxos", "nxos"),
-    ("Juniper JunOS", "junos", "junos", "juniper_junos", "junos"),
-    ("Arista EOS", "eos", "eos", "arista_eos", "eos"),
-    ("Linux", "linux", "linux", "linux", "linux")
+    # name, nornir_platform, napalm_driver, netmiko_device_type, ansible_network_os, containerlab_os
+    ("Cisco IOS-XE", "ios", "ios", "cisco_ios", "ios", "ios"),
+    ("Cisco IOS-XR", "iosxr", "iosxr", "cisco_xr", "cisco.iosxr.iosxr", "cisco_xrv"),
+    ("Cisco NXOS SSH", "nxos_ssh", "nxos_ssh", "cisco_nxos", "nxos", "cisco_n9kv"),
+    ("Juniper JunOS", "junos", "junos", "juniper_junos", "junos", "juniper_vjunosswitch"),
+    ("Arista EOS", "eos", "eos", "arista_eos", "eos", "ceos"),
+    ("Linux", "linux", "linux", "linux", "linux", "linux")
 )
 
 DEVICE_TYPES = (
@@ -122,6 +122,7 @@ GROUPS = (
     ("juniper_devices", "Juniper Devices"),
     ("upstream_interfaces", "Upstream Interface"),
     ("core_interfaces", "Core Interface"),
+    ("all_topologies", "All Topologies")
 )
 
 BGP_PEER_GROUPS = (
@@ -297,6 +298,7 @@ async def create_basics(
             "napalm_driver": platform[2],
             "netmiko_device_type": platform[3],
             "ansible_network_os": platform[4],
+            "containerlab_os": platform[5],
         }
        if manufacturer:
            data["manufacturer"] = {"id": manufacturer.id }

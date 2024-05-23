@@ -1,5 +1,4 @@
 ---
-version: "3.4"
 
 services:
   message-queue:
@@ -16,7 +15,7 @@ services:
   cache:
     image: "${CACHE_DOCKER_IMAGE:-redis:latest}"
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
       interval: 5s
       timeout: 5s
       retries: 3

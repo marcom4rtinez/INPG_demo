@@ -15,6 +15,10 @@ jinja2_transforms:
     query: "juniper_srx_config"
     template_path: "templates/juniper_srx_config.j2"
 
+  - name: "clab_topology"
+    query: "topology_info"
+    template_path: "topology/clab_topology.j2"
+
 artifact_definitions:
   - name: "Openconfig Interface for Arista devices"
     artifact_name: "openconfig-interfaces"
@@ -47,6 +51,14 @@ artifact_definitions:
     content_type: "text/plain"
     targets: "firewall_devices"
     transformation: "firewall_config"
+
+  - name: "Containerlab Topology"
+    artifact_name: "containerlab-topology"
+    parameters:
+      topology_name: "name__value"
+    content_type: "text/plain"
+    targets: "all_topologies"
+    transformation: "clab_topology"
 
 check_definitions:
   - name: "check_device_topology"
