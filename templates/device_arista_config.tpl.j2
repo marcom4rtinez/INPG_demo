@@ -103,7 +103,7 @@ interface {{ intf.node.name.value }}
    switchport trunk native vlan {{ intf.node.untagged_vlan.node.vlan_id.value }}
 {%         endif %}
 {%         if intf.node.tagged_vlan %}
-   switchport trunk allowed vlan {% for tagged_vlan in intf.node.tagged_vlan.edges %} {{ tagged_vlan["node"]["vlan_id"]["value"] }}{% if not loop.last %}, {% endif %}{% endfor %}
+   switchport trunk allowed vlan {% for tagged_vlan in intf.node.tagged_vlan.edges %}{{ tagged_vlan["node"]["vlan_id"]["value"] }}{% if not loop.last %}, {% endif %}{% endfor %}
 
 {%         endif %}
 {%         if intf.node.role.value == "server" %}
