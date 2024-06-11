@@ -39,6 +39,7 @@ services:
   infrahub-server:
     image: "${INFRAHUB_DOCKER_IMAGE}"
     command: gunicorn --config backend/infrahub/serve/gunicorn_config.py --logger-class infrahub.serve.log.GunicornLogger infrahub.server:app
+    privileged: true
     depends_on:
       database:
         condition: service_healthy
@@ -50,12 +51,14 @@ services:
       - "INFRAHUB_CONFIG=/source/development/infrahub.toml"
       - "INFRAHUB_PRODUCTION=false"
       - "INFRAHUB_LOG_LEVEL=INFO"
-      - "INFRAHUB_SECURITY_INITIAL_ADMIN_TOKEN=${INFRAHUB_API_TOKEN}"
+      - "INFRAHUB_INITIAL_ADMIN_TOKEN=${INFRAHUB_API_TOKEN}"
       - "INFRAHUB_SECURITY_SECRET_KEY=${INFRAHUB_SECURITY_SECRET_KEY}"
       - "INFRAHUB_ALLOW_ANONYMOUS_ACCESS=true"
       - "PROMETHEUS_MULTIPROC_DIR=/prom_shared"
       - "INFRAHUB_FRONTEND_DIRECTORY=/opt/infrahub/frontend"
       - "INFRAHUB_DB_TYPE=neo4j"
+      - "INFRAHUB_BROKER_ADDRESS=message-queue"
+      - "INFRAHUB_CACHE_ADDRESS=cache"
     ports:
       - "8000:8000"
     volumes:
@@ -86,6 +89,8 @@ services:
       - "INFRAHUB_SDK_API_TOKEN=${INFRAHUB_API_TOKEN}"
       - "INFRAHUB_TIMEOUT=20"
       - "INFRAHUB_DB_TYPE=neo4j"
+      - "INFRAHUB_BROKER_ADDRESS=message-queue"
+      - "INFRAHUB_CACHE_ADDRESS=cache"
     volumes:
       - "git_data:/opt/infrahub/git"
       - "git_remote_data:/remote"
