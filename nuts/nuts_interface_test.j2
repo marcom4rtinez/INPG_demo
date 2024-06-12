@@ -10,12 +10,12 @@
         speed: 1000
 #}
 - test_class: TestNapalmInterfaces
-    test_data:
-        {% for interface in data.InfraDevice.edges[0].node.interfaces.edges %}
-        - host: {{ data.InfraDevice.edges[0].node.name.value }}
-          name: {{ interface.node.name.value }}
-          is_enabled: {{ interface.node.enabled.value }}
-          is_up: {{ 'True' if interface.node.status.value == 'active' else 'False' }}
-          mtu: {{ interface.node.mtu.value }}
-          speed: {{ interface.node.speed.value }}
-        {% endfor %}
+  test_data:
+    {% for interface in data.InfraDevice.edges[0].node.interfaces.edges %}
+    - host: {{ data.InfraDevice.edges[0].node.name.value }}
+      name: {{ interface.node.name.value }}
+      is_enabled: {{ interface.node.enabled.value }}
+      is_up: {{ 'True' if interface.node.status.value == 'active' else 'False' }}
+      mtu: {{ interface.node.mtu.value }}
+      speed: {{ interface.node.speed.value }}
+    {% endfor %}
