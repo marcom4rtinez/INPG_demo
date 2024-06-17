@@ -34,7 +34,7 @@ def get_device_configs():
 
 
 def get_nuts_tests():
-    directory_path = "./generated-configs/clab/nuts/tests"
+    directory_path = "./nuts/tests"
     if not os.path.exists(directory_path):
         os.makedirs(directory_path)
 
@@ -81,17 +81,18 @@ def main():
         parser.print_help()
         return 0
 
-    actions = {
-        args.nuts_tests: get_nuts_tests,
-        args.containerlab_topology: get_containerlab_topology,
-        args.device_configs: get_device_configs,
-        args.deploy_containerlab: deploy_containerlab_topology,
-        args.destroy_containerlab: destroy_containerlab_topology,
-    }
+    actions = [
+        (args.nuts_tests, get_nuts_tests),
+        (args.containerlab_topology, get_containerlab_topology),
+        (args.device_configs, get_device_configs),
+        (args.deploy_containerlab, deploy_containerlab_topology),
+        (args.destroy_containerlab, destroy_containerlab_topology),
+    ]
 
-    for flag, func in actions.items():
+    for flag, func in actions:
         if flag:
             func()
+
 
 
 if __name__ == "__main__":
