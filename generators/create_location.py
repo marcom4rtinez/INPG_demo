@@ -72,6 +72,47 @@ LOCATIONS = {
                     }
                 }
             },
+            "Switzerland": {
+                "shortname": "CH",
+                "timezone": "CET",
+                "regions": {
+                    "ch-east": {
+                        "shortname": "CHE",
+                        "metros": {
+                            "Zurich": {
+                                "shortname": "ZRH",
+                                "buildings": {
+                                    "INS ZRH1": {
+                                        "shortname": "ZRH1",
+                                        "facility_id": "ins-zrh1",
+                                        "owner": "INS",
+                                        "floors": {
+                                            "floor-2": {
+                                                "shortname": "F2",
+                                                "suites": {
+                                                    "suite-f2-r1": {
+                                                        "shortname": "F2R1",
+                                                        "facility_id": "00-f2-r1",
+                                                        "owner": "Duff",
+                                                        "racks": {
+                                                            "R01B05": {
+                                                                "facility_id": "F2-R1-R01B05",
+                                                            },
+                                                            "R01B06": {
+                                                                "facility_id": "F2-R1-R01B06",
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "Netherlands": {
                 "shortname": "NL",
                 "timezone": "CET",

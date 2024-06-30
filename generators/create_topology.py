@@ -22,6 +22,7 @@ TOPOLOGY = (
     # name, description, Location shortname, strategy
     ("fra05-pod1", "Small Fabric in Equinix FRA05", "FRA05", "ebgp-ebgp"),
     # ("ams9-pod1", "Big Fabric in Interxion AMS9", "AMS9", None),
+    ("zrh1-pod1", "Medium Fabric in INS ZRH1", "ZRH1", "ebgp-ebgp"),
     ("de1-pod1", "Medium Fabric in Equinix DE1", "DE1", "ebgp-ebgp"),
     ("de2-pod1", "Medium Fabric in Equinix DE2", "DE2", "ospf-ibgp"),
     ("denver-mpls1", "Medium MPLS in Denver Metro (DE1+DE2)", "DEN", "isis-ibgp"),
@@ -32,6 +33,10 @@ TOPOLOGY_ELEMENTS = {
     "fra05-pod1": [
         ( 2, "spine", "CCS-720DP-48S-2F", 1500, False, False),
         ( 2, "leaf", "CCS-720DP-48S-2F", 1500, True, False),
+    ],
+    "zrh1-pod1": [
+        ( 2, "spine", "NCS-5501-SE", 1500, False, False),
+        ( 2, "leaf", "NCS-5501-SE", 1500, True, False),
     ],
     # "ams9-pod1": [
     #     ( 4, "spine", "CCS-720DP-48S-2F", 9192, False, False),
