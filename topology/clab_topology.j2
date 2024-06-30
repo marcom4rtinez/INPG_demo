@@ -2,6 +2,8 @@ name: avdasymirb
 
 topology:
   kinds:
+    cisco_xrv:
+      image: "${IOSXR_DOCKER_IMAGE:-ios_xr}"
     ceos:
       image: "${CEOS_DOCKER_IMAGE}"
       exec:
