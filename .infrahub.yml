@@ -19,6 +19,10 @@ jinja2_transforms:
     query: "topology_info"
     template_path: "topology/clab_topology.j2"
 
+  - name: "nuts_clab_topology"
+    query: "topology_info"
+    template_path: "nuts/clab_topology.j2"
+
   - name: "nuts_interface_test"
     query: "nuts_interface_test"
     template_path: "nuts/nuts_interface_test.j2"
@@ -71,6 +75,14 @@ artifact_definitions:
     content_type: "text/plain"
     targets: "all_topologies"
     transformation: "clab_topology"
+
+  - name: "NUTS Containerlab Topology"
+    artifact_name: "nuts-containerlab-topology"
+    parameters:
+      topology_name: "name__value"
+    content_type: "text/plain"
+    targets: "all_topologies"
+    transformation: "nuts_clab_topology"
 
 check_definitions:
   - name: "check_device_topology"

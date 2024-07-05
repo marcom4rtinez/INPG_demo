@@ -12,7 +12,7 @@ def get_containerlab_topology():
     topologies = client.all(kind="TopologyTopology")
 
     for topology in topologies:
-        artifact = topology.artifact_fetch("Containerlab Topology")
+        artifact = topology.artifact_fetch("NUTS Containerlab Topology")
         with open(f'{directory_path}/{topology.name.value}.yml', 'w') as file:
             file.write(artifact)
 

@@ -1,0 +1,19 @@
+inventory:
+  plugin: InfrahubInventory
+  options:
+    defaults_file: defaults.yaml
+    address: "http://172.20.0.2:8000"
+    host_node:
+      kind: "InfraDevice"
+    schema_mappings:
+      - name: hostname
+        mapping: primary_address.address
+      - name: platform
+        mapping: platform.nornir_platform
+    group_mappings: ["site.name"]
+    group_file: dummy.yml
+  transform_function: "load_credentials"
+runner:
+  plugin: threaded
+  options:
+    num_workers: 100

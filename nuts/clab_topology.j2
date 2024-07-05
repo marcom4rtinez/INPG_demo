@@ -1,0 +1,77 @@
+name: avdasymirb
+
+topology:
+  kinds:
+    cisco_xrv:
+      image: "${IOSXR_DOCKER_IMAGE:-ios_xr}"
+    ceos:
+      image: "${CEOS_DOCKER_IMAGE}"
+      exec:
+        - sleep 10
+        - FastCli -p 15 -c 'security pki key generate rsa 4096 eAPI.key'
+        - FastCli -p 15 -c 'security pki certificate generate self-signed eAPI.crt key eAPI.key generate rsa 4096 validity 30000 parameters common-name eAPI'
+    linux:
+      image: "${LINUX_HOST_DOCKER_IMAGE}"
+  nodes:
+{% for device in data.InfraDevice.edges %}
+{% set networkos = device.node.device_type.node.platform.node.containerlab_os.value %}
+    {{ device.node.name.value }}:
+      kind: {{ networkos }}
+{%  for intf in device.node.interfaces.edges %}
+{%    if intf.node.role.value == "management" %}
+{%      set management_ip = intf.node.ip_addresses.edges[0].node.address.value.split('/') %}
+      mgmt-ipv4: {{ management_ip[0] }}
+{%    endif %}
+{%  endfor %}
+{%  if networkos == "ceos" %}
+      startup-config: configs/startup/{{ device.node.name.value }}.cfg
+{%  endif %}
+{%  if networkos == "linux" %}
+      env:
+        TMODE: lacp
+{%  endif %}
+{% endfor %}
+    nuts:
+      kind: linux
+      image: ghcr.io/marcom4rtinez/nuts-testclient:latest
+      binds:
+        - ../../nuts/allure-results:/nuts/allure-results
+        - ../../nuts/tests:/nuts/tests
+        - ../../nuts/nr-config.yaml:/nuts/nr-config.yaml
+        - ../../nuts/defaults.yaml:/nuts/defaults.yaml
+      exec:
+        - ip address add 172.20.0.1/16 dev eth1
+    infrahub-demo-dc-fabric-develop-infrahub-server-1:
+      kind: ext-container
+      exec:
+        - apt update
+        - apt install iproute2 -y
+        - ip address add 172.20.0.2/16 dev eth1
+
+  links:
+{% set processed_endpoints = [] %}
+{% for device in data.InfraDevice.edges %}
+  {% for interface in device.node.interfaces.edges %}
+    {% set connected_endpoint = interface.node.connected_endpoint.node %}
+    {% if connected_endpoint is not none %}
+      {% set endpoint1 = device.node.name.value + ":" + interface.node.name.value %}
+      {% set endpoint2 = connected_endpoint.device.node.name.value + ":" + connected_endpoint.name.value %}
+      {% set endpoint_tuple = [endpoint1, endpoint2] | sort %}
+      {% set endpoint_key = endpoint_tuple | join("|") %}
+      {% if endpoint_key not in processed_endpoints %}
+        {% set _ = processed_endpoints.append(endpoint_key) %}
+        {% set endpoint1 = endpoint1.replace("Ethernet", "eth") %}
+        {% set endpoint2 = endpoint2.replace("Ethernet", "eth") %}
+    - endpoints: ["{{ endpoint1 }}", "{{ endpoint2 }}"]
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+    - endpoints:
+      ["nuts:eth1", "infrahub-demo-dc-fabric-develop-infrahub-server-1:eth1"]
+
+mgmt:
+  network: ceos_clab
+  ipv4-gw: 172.16.255.254
+  ipv4-subnet: 172.16.0.0/16
+  ipv6-subnet: 2001:172:16::/80
