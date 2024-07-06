@@ -140,6 +140,13 @@ ip routing vrf {{ vrf.node.name.value }}
 !
 ip route 0.0.0.0/0 {{ ns.mangement_gw_ip }}
 !
+router ospf 1
+   router-id {{ ns.loopback_ip }}
+   redistribute connected
+   max-lsa 12000
+   passive-interface Loopback0
+   network 0.0.0.0/0 area 0.0.0.0
+!
 {%   if data.InfraDevice.edges[0].node.asn %}
 router bgp {{ data.InfraDevice.edges[0].node.asn.node.asn.value }}
    router-id {{ ns.loopback_ip }}
