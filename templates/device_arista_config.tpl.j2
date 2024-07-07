@@ -151,9 +151,9 @@ router ospf 1
 router bgp {{ data.InfraDevice.edges[0].node.asn.node.asn.value }}
    router-id {{ ns.loopback_ip }}
    maximum-paths 4 ecmp 4
-   update wait-install
    no bgp default ipv4-unicast
    no update wait-install
+   bgp default ipv4-unicast
    {% for bgp_neighbors in data.InfraBGPSession.edges %}
    {% if bgp_neighbors.node.peer_session.node.device.node.name.value ==  data.InfraDevice.edges[0].node.name.value %}
    {% if bgp_neighbors.node.role.value not in ns.peering_group_list %}
