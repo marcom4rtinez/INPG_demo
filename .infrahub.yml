@@ -56,16 +56,16 @@ artifact_definitions:
     targets: "arista_devices"
     transformation: "device_arista"
 
-  - name: "NUTS Interface tests for Arista devices"
-    artifact_name: "startup-config"
+  - name: "NUTS tests Interface for Arista devices"
+    artifact_name: "nuts_interface"
     parameters:
       device: "name__value"
     content_type: "text/plain"
     targets: "arista_devices"
     transformation: "nuts_interface_test"
 
-  - name: "NUTS BGP tests for Arista devices"
-    artifact_name: "startup-config"
+  - name: "NUTS tests BGP for Arista devices"
+    artifact_name: "nuts_bgp"
     parameters:
       device: "name__value"
     content_type: "text/plain"
