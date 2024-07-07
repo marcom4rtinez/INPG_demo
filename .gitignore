@@ -10,3 +10,5 @@ playbooks/intended
 .envrc
 .env
 pyrightconfig.json
+generated-configs/
+nuts/tests/
