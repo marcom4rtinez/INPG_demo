@@ -1,0 +1,46 @@
+query device_info($device: String!) {
+  InfraBGPSession(device__name__value: $device) {
+    edges {
+      node {
+        remote_as {
+          node {
+            asn {
+              value
+            }
+          }
+        }
+        device {
+          node {
+            name {
+              value
+            }
+          }
+        }
+        remote_ip {
+          node {
+            address {
+              ip
+            }
+          }
+        }
+        local_as {
+          node {
+            asn {
+              value
+            }
+          }
+        }
+        local_ip {
+          node {
+            address {
+              ip
+            }
+          }
+        }
+        status {
+          value
+        }
+      }
+    }
+  }
+}

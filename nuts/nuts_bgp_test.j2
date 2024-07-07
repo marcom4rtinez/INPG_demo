@@ -1,0 +1,24 @@
+{# - test_class: TestNapalmBgpNeighbors
+  test_execution:
+    vrf: <string, optional>
+  test_data:
+    - host: <host name, required>
+      local_id: <ID>
+      local_as: <AS number>
+      peer: <IP address, required>
+      remote_as: <AS number>
+      remote_id: <remote ID>
+      is_enabled: <true|false>
+      is_up: <true|false>
+#}
+
+- test_class: TestNapalmBgpNeighbors
+  test_data:
+  {% for node in data.InfraBGPSession.edges  %}
+    - host: {{ node.node.device.node.name.value }}
+      local_as: {{ node.node.local_as.node.asn.value }}
+      peer: {{ node.node.remote_ip.node.address.ip }}
+      remote_as: {{ node.node.remote_as.node.asn.value }}
+      is_enabled: {{ 'True' if node.node.status.value == 'active' else 'False' }}
+      is_up: {{ 'True' if node.node.status.value == 'active' else 'False' }}
+  {% endfor %}
