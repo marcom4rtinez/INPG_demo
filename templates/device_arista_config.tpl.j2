@@ -151,7 +151,6 @@ router ospf 1
 router bgp {{ data.InfraDevice.edges[0].node.asn.node.asn.value }}
    router-id {{ ns.loopback_ip }}
    maximum-paths 4 ecmp 4
-   no bgp default ipv4-unicast
    no update wait-install
    bgp default ipv4-unicast
    {% for bgp_neighbors in data.InfraBGPSession.edges %}
