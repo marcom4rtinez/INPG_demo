@@ -13,11 +13,21 @@
   test_data:
 {% for interface in data.InfraDevice.edges[0].node.interfaces.edges %}
 {% if interface.node.status.value == 'active' %}{# skip interfaces if not up as they are not present in containerlab #}
+{% if interface.node.role.value == 'loopback' %}{# lo interfaces are different #}
+    - host: {{ data.InfraDevice.edges[0].node.name.value }}
+      name: {{ interface.node.name.value }}
+      is_enabled: {{ interface.node.enabled.value }}
+      is_up: {{ 'True' if interface.node.status.value == 'active' else 'False' }}
+      mtu: 65535
+      speed: 0
+{% elif interface.node.role.value == 'peer' %}
+{% else %}
     - host: {{ data.InfraDevice.edges[0].node.name.value }}
       name: {{ interface.node.name.value }}
       is_enabled: {{ interface.node.enabled.value }}
       is_up: {{ 'True' if interface.node.status.value == 'active' else 'False' }}
       mtu: {{ interface.node.mtu.value }}
       speed: {{ interface.node.speed.value }}
+{% endif %}
 {% endif %}
 {% endfor %}

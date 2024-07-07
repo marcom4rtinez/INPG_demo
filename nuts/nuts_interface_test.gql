@@ -23,6 +23,9 @@ query device_info($device: String!) {
               speed {
                 value
               }
+              role {
+                value
+              }
             }
           }
         }
