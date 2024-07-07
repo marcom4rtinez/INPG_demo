@@ -58,7 +58,9 @@ query device_info($device: String!) {
                       vrf {
                         node {
                           ... on InfraVRF {
-                            vrf_rd {value}
+                            vrf_rd {
+                              value
+                            }
                           }
                         }
                       }
@@ -85,7 +87,6 @@ query device_info($device: String!) {
                     network_management_servers {
                       edges {
                         node {
-                          __typename
                           name {
                             value
                           }
@@ -188,6 +189,61 @@ query device_info($device: String!) {
           node {
             name {
               value
+            }
+          }
+        }
+      }
+    }
+  }
+  InfraBGPSession {
+    edges {
+      node {
+        type {
+          value
+        }
+        status {
+          value
+        }
+        role {
+          value
+        }
+        peer_session {
+          node {
+            display_label
+            device {
+              node {
+                name {
+                  value
+                }
+              }
+            }
+            local_ip {
+              node {
+                address {
+                  ip
+                }
+              }
+            }
+            local_as {
+              node {
+                asn {
+                  value
+                }
+              }
+            }
+            remote_ip {
+              node {
+                address {
+                  ip
+                }
+              }
+            }
+            remote_as {
+              node {
+                asn {
+                  value
+                }
+              }
             }
           }
         }

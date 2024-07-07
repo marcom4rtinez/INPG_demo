@@ -1,4 +1,4 @@
-{% set ns = namespace(loopback_intf_name=None, loopback_ip=None, management_intf_name=None, management_ip=None, ntp_servers=[], name_servers=[]) %}
+{% set ns = namespace(loopback_intf_name=None, loopback_ip=None, management_intf_name=None, management_ip=None, ntp_servers=[], name_servers=[], peering_group_list = []) %}
 {% if data.InfraDevice.edges and data.InfraDevice.edges is iterable %}
 {%   for ancestor_edge in data.InfraDevice.edges[0].node.location.node.ancestors.edges %}
 {%      for server_edge in ancestor_edge.node.network_management_servers.edges %}
@@ -154,7 +154,18 @@ router bgp {{ data.InfraDevice.edges[0].node.asn.node.asn.value }}
    update wait-install
    no bgp default ipv4-unicast
    no update wait-install
-   no bgp default ipv4-unicast
+   {% for bgp_neighbors in data.InfraBGPSession.edges %}
+   {% if bgp_neighbors.node.peer_session.node.device.node.name.value ==  data.InfraDevice.edges[0].node.name.value %}
+   {% if bgp_neighbors.node.role.value not in ns.peering_group_list %}
+   {% set ns.peering_group_list = ns.peering_group_list + [bgp_neighbors.node.role.value] %}
+   neighbor {{ bgp_neighbors.node.role.value |upper }} peer group
+   neighbor {{ bgp_neighbors.node.role.value |upper}} send-community
+   neighbor {{ bgp_neighbors.node.role.value |upper}} remote-as {{bgp_neighbors.node.peer_session.node.remote_as.node.asn.value}}
+   {% endif %}
+   neighbor {{ bgp_neighbors.node.peer_session.node.remote_ip.node.address.ip }} peer group {{ bgp_neighbors.node.role.value |upper}}
+   {% endif %}
+   {% endfor %}
+
 !
 {%   for vrf in data.InfraVRF.edges %}
    vrf {{ vrf.node.name.value }}
@@ -163,6 +174,9 @@ router bgp {{ data.InfraDevice.edges[0].node.asn.node.asn.value }}
    route-target export evpn {{ vrf.node.export_rt.node.name.value }}
    router-id {{ ns.loopback_ip }}
    redistribute connected
+   {% for group in ns.peering_group_list%}
+   neighbor {{ group |upper}} activate
+   {% endfor %}
 !
 {%   endfor %}
 {%   endif %}
