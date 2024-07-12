@@ -1,5 +1,5 @@
 query device_info($device: String!) {
-    InfraDevice(name__value: $device) {
+  InfraDevice(name__value: $device) {
     edges {
       node {
         id
@@ -168,46 +168,29 @@ query device_info($device: String!) {
       }
     }
   }
-  InfraBGPSession(device__name__value: $device) {
+  InfraVRF {
     edges {
       node {
-        remote_as {
-          node {
-            asn {
-              value
-            }
-          }
+        id
+        name {
+          value
         }
-        device {
+        vrf_rd {
+          value
+        }
+        import_rt {
           node {
             name {
               value
             }
           }
         }
-        remote_ip {
+        export_rt {
           node {
-            address {
-              ip
-            }
-          }
-        }
-        local_as {
-          node {
-            asn {
+            name {
               value
             }
           }
-        }
-        local_ip {
-          node {
-            address {
-              ip
-            }
-          }
-        }
-        status {
-          value
         }
       }
     }

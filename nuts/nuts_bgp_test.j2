@@ -11,10 +11,19 @@
       is_enabled: <true|false>
       is_up: <true|false>
 #}
+{% set ns = namespace(loopback_ip=None) %}
+{%   for intf in data.InfraDevice.edges[0].node.interfaces.edges %}
+{%      if intf.node.role.value == "loopback" %}
+{%         if intf.node.ip_addresses.edges %}
+{%            set ns.loopback_ip = intf.node.ip_addresses.edges[0].node.address.ip %}
+{%         endif %}
+{%         endif %}
+{% endfor %}
 - test_class: TestNapalmBgpNeighbors
   test_data:
   {% for node in data.InfraBGPSession.edges  %}
     - host: {{ node.node.device.node.name.value }}
+      local_id: {{ ns.loopback_ip }}
       local_as: {{ node.node.local_as.node.asn.value }}
       peer: {{ node.node.remote_ip.node.address.ip }}
       remote_as: {{ node.node.remote_as.node.asn.value }}

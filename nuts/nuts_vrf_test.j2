@@ -1,0 +1,24 @@
+{#
+- test_class: TestNapalmNetworkInstances
+  test_data:
+    - host: <host name, required>
+      network_instance: <VRF name, required>
+      interfaces:
+        - <interface name>
+      route_distinguisher: "<number>:<number>"
+#}
+{% set ns = namespace(loopback_ip=None) %}
+{%   for intf in data.InfraDevice.edges[0].node.interfaces.edges %}
+{%      if intf.node.role.value == "loopback" %}
+{%         if intf.node.ip_addresses.edges %}
+{%            set ns.loopback_ip = intf.node.ip_addresses.edges[0].node.address.ip %}
+{%         endif %}
+{%         endif %}
+{% endfor %}
+- test_class: TestNapalmNetworkInstances
+  test_data:
+{%   for vrf in data.InfraVRF.edges %}
+    - host: {{ data.InfraDevice.edges[0].node.name.value }}
+      network_instance: {{ vrf.node.name.value }}
+      route_distinguisher: "{{ ns.loopback_ip }}:{{ vrf.node.vrf_rd.value }}"
+{% endfor %}
