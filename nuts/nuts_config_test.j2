@@ -1,0 +1,10 @@
+{#
+- test_class: TestNapalmConfig
+  test_data:
+    - host: <host name, required>
+      startup_equals_running_config: <True|False, required>
+#}
+- test_class: TestNapalmConfig
+  test_data:
+    - host: {{ data.InfraDevice.edges[0].node.name.value }}
+      startup_equals_running_config: True

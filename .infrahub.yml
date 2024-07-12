@@ -31,6 +31,10 @@ jinja2_transforms:
     query: "nuts_bgp_test"
     template_path: "nuts/nuts_bgp_test.j2"
 
+  - name: "nuts_config_test"
+    query: "nuts_config_test"
+    template_path: "nuts/nuts_config_test.j2"
+
 artifact_definitions:
   - name: "Openconfig Interface for Arista devices"
     artifact_name: "openconfig-interfaces"
@@ -71,6 +75,14 @@ artifact_definitions:
     content_type: "text/plain"
     targets: "arista_devices"
     transformation: "nuts_bgp_test"
+
+  - name: "NUTS tests Config for Arista devices"
+    artifact_name: "nuts_config"
+    parameters:
+      device: "name__value"
+    content_type: "text/plain"
+    targets: "arista_devices"
+    transformation: "nuts_config_test"
 
   - name: "Firewall config"
     artifact_name: "firewall-config"
