@@ -12,3 +12,4 @@ playbooks/intended
 pyrightconfig.json
 generated-configs/
 nuts/tests/
+nuts/allure*
