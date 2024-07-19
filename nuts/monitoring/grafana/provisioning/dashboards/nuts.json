@@ -660,7 +660,7 @@
           "useBackend": false
         }
       ],
-      "title": "Average Execution Time 12h",
+      "title": "Average Execution Time",
       "type": "histogram"
     },
     {
