@@ -19,6 +19,8 @@
   test_data:
 {%   for vrf in data.InfraVRF.edges %}
     - host: {{ data.InfraDevice.edges[0].node.name.value }}
+      interfaces:
+        - Vlan\d{4}
       network_instance: {{ vrf.node.name.value }}
       route_distinguisher: "{{ ns.loopback_ip }}:{{ vrf.node.vrf_rd.value }}"
 {% endfor %}
