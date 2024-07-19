@@ -12,7 +12,7 @@ inventory:
         mapping: platform.nornir_platform
     group_mappings: ["site.name"]
     group_file: dummy.yml
-  transform_function: "load_credentials"
+  transform_function: "transform_function_host_cleanup"
 runner:
   plugin: threaded
   options:

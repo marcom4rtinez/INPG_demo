@@ -38,6 +38,7 @@ topology:
         - ../../nuts/tests:/nuts/tests
         - ../../nuts/nr-config.yaml:/nuts/nr-config.yaml
         - ../../nuts/defaults.yaml:/nuts/defaults.yaml
+        - ../../nuts/conftest.py:/nuts/conftest.py
       exec:
         - ip address add 172.20.0.1/16 dev eth1
     infrahub-demo-dc-fabric-develop-infrahub-server-1:
