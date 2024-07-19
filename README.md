@@ -162,8 +162,44 @@ The containerlab generator automatically generates a containerlab topology artif
 
 ```shell
 # Download all artifacts automatically to ./generated-configs/
-poetry run python3 scripts/get_configs.py
+# poetry run python3 scripts/get_configs.py --help  for all options
+poetry run python3 scripts/get_configs.py -n -c -d
 
 # Start the containerlab
 sudo -E containerlab deploy -t ./generated-configs/clab/fra05-pod1.yml --reconfigure
+```
+
+### 13. Start Prometheus and Grafana
+
+NUTS can be run independently, however if visualization is desired it can be run with the `--metrics` flag and it will be sent to grafana.
+
+```shell
+cd nuts
+docker compose up -d
+cd -
+```
+
+### 14. Use NUTS to test the environment
+
+The NUTS test client in the containerlab is set up to be ready for test execution. Tests where pulled in step 12. with `get_config.py`.
+
+```shell
+# Set the variables if you want to change the target, set by default
+export PROMETHEUS_PUSHGATEWAY_URL="http://prom-pushgateway:9091"
+export PROMETHEUS_PUSHGATEWAY_JOB="nuts"
+```
+
+```shell
+# Enter the container
+docker exec -it clab-avdasymirb-nuts bash
+
+# Execute all generated tests for fra05-pod1
+pytest tests/test_fra05-pod1-* --metrics
+```
+
+Go to grafana and see the dashboard on http://localhost:3000 (admin:infrahub). After login go to the Infrahub NUTS Dashboard
+
+```shell
+# Do it continously to generate visibility in grafana
+count=1; while [ $count -le 100 ]; do pytest tests/test_fra05-pod1-* --metrics; ((count++)); done
 ```
