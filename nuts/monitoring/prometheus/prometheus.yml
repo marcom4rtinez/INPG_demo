@@ -12,13 +12,3 @@ scrape_configs:
       - targets: ["prom-pushgateway:9091"]
         labels:
           service: "prom-pushgateway"
-
-rule_files:
-  - /etc/prometheus/alert.rules
-
-alerting:
-  alertmanagers:
-    - scheme: http
-      static_configs:
-        - targets:
-            - alertmanager:9093
