@@ -39,7 +39,8 @@
     "LINUX_HOST_DOCKER_IMAGE": "9r2s1098.c1.gra9.container-registry.ovh.net/external/alpine-host:v3.1.1"
   },
   "forwardPorts": [
-    8000
+    8000,
+    3000
   ],
   "runArgs": [
     "--volume=/var/lib/docker",
