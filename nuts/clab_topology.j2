@@ -41,7 +41,7 @@ topology:
         - ../../nuts/conftest.py:/nuts/conftest.py
       exec:
         - ip address add 172.20.0.1/16 dev eth1
-    ipng_demo-infrahub-server-1:
+    inpg_demo-infrahub-server-1:
       kind: ext-container
       exec:
         - apt update
@@ -68,7 +68,7 @@ topology:
   {% endfor %}
 {% endfor %}
     - endpoints:
-        ["nuts:eth1", "infrahub-demo-dc-fabric-develop-infrahub-server-1:eth1"]
+        ["nuts:eth1", "inpg_demo-infrahub-server-1:eth1"]
 
 mgmt:
   network: ceos_clab
