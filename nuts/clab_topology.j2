@@ -41,7 +41,7 @@ topology:
         - ../../nuts/conftest.py:/nuts/conftest.py
       exec:
         - ip address add 172.20.0.1/16 dev eth1
-    infrahub-demo-dc-fabric-develop-infrahub-server-1:
+    ipng_demo-infrahub-server-1:
       kind: ext-container
       exec:
         - apt update
