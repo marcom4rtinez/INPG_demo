@@ -129,3 +129,31 @@ python_transforms:
   - name: OCInterfaces
     class_name: OCInterfaces
     file_path: "transforms/openconfig.py"
+
+queries:
+  - name: topology_info
+    file_path: "topology/topology_info.gql"
+
+  - name: juniper_srx_config
+    file_path: "templates/juniper_srx_config.gql"
+
+  - name: device_info
+    file_path: "templates/device_info.gql"
+
+  - name: oc_interfaces
+    file_path: "transforms/oc_interfaces.gql"
+
+  - name: check_device_topology
+    file_path: "checks/check_device_topology.gql"
+
+  - name: nuts_vrf_test
+    file_path: "nuts/nuts_vrf_test.gql"
+
+  - name: nuts_bgp_test
+    file_path: "nuts/nuts_bgp_test.gql"
+
+  - name: nuts_config_test
+    file_path: "nuts/nuts_config_test.gql"
+
+  - name: nuts_interface_test
+    file_path: "nuts/nuts_interface_test.gql"

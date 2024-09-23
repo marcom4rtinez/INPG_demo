@@ -5,7 +5,7 @@ description = ""
 authors = ["OpsMill <info@opsmill.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10, < 3.12"
+python = "^3.10, < 3.13"
 infrahub-sdk = {version = "^0,>=0.9.1", extras = ["all"]}
 invoke = "^2.1.2"
 nornir-infrahub = "^0, >=0.2.2"
@@ -17,7 +17,6 @@ cvprac = "^1.3.1"
 md-toc = "^8.2.2"
 treelib = "^1.7.0"
 jsonschema = "4.17"
-# anta = "^0.11.0"
 pytest = "^7.4.4"
 
 [build-system]
