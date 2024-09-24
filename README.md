@@ -1,11 +1,13 @@
 # INPG Stack Demo - Infrahub, NUTS, Prometheus and Grafana
 
 ## Getting Started
-You can run this demo on your pc using docker, or using Github Codespaces.
+You can run this demo on your PC using docker, or using Github Codespaces.
 
-### Prerequisites
+### Prerequisites on local Instances
 
-- If you are not using devcontainer or Github Codespaces, you will need to export those variables:
+If you are not using Devcontainer or Github Codespaces, you will need to do the following steps. Otherwise jump to the step Demo.
+
+Export those variables:
 
 ```shell
 export INFRAHUB_ADDRESS="http://localhost:8000"
@@ -13,8 +15,6 @@ export INFRAHUB_API_TOKEN="06438eb2-8019-4776-878c-0941b1f1d1ec"
 export CEOS_DOCKER_IMAGE="9r2s1098.c1.gra9.container-registry.ovh.net/external/ceos-image:4.29.0.2F"
 export LINUX_HOST_DOCKER_IMAGE="9r2s1098.c1.gra9.container-registry.ovh.net/external/alpine-host:v3.1.1"
 ```
-
-## Installation Steps
 
 ### Install the Infrahub SDK
 
