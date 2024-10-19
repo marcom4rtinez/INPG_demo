@@ -68,8 +68,8 @@ mutation AddCredential {
 mutation AddRepository{
   CoreRepositoryCreate(
     data: {
-      name: { value: "infrahub-demo-dc-fabric" }
-      location: { value: "https://github.com/opsmill/infrahub-demo-dc-fabric.git" }
+      name: { value: "INPG_demo" }
+      location: { value: "https://github.com/marcom4rtinez/INPG_demo.git" }
       # The HFID return from the previous mutation. Will be the name of the credentials
       credential: { hfid: "my-git-credential" }
     }
